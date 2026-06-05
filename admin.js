@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const BACKEND_URL = 'http://localhost:3000/api';
 
 const adminSearchInput = document.getElementById('adminSearchInput');
 const adminSearchButton = document.getElementById('adminSearchButton');
@@ -76,7 +76,7 @@ function renderTable(guestList) {
 async function fetchGuestList() {
   hideStatus();
   try {
-    const response = await fetch(`${BACKEND_URL}?admin=true`);
+    const response = await fetch(`${BACKEND_URL}/admin`);
     if (!response.ok) throw new Error('Unable to contact backend.');
     const data = await response.json();
     if (!data || !data.success) throw new Error('Invalid backend response.');

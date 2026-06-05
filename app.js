@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const BACKEND_URL = 'http://localhost:3000/api';
 
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
@@ -70,7 +70,7 @@ async function searchGuest() {
   setLoading(true);
 
   try {
-    const response = await fetch(`${BACKEND_URL}?name=${encodeURIComponent(query)}`);
+    const response = await fetch(`${BACKEND_URL}/guest?name=${encodeURIComponent(query)}`);
     if (!response.ok) throw new Error('Failed to connect to backend.');
 
     const data = await response.json();
@@ -107,7 +107,7 @@ async function checkInGuest() {
   setLoading(true);
 
   try {
-    const response = await fetch(BACKEND_URL, {
+    const response = await fetch(`${BACKEND_URL}/checkin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
