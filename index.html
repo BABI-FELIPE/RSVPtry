@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Guest Verification</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="hero-card">
+      <div class="brand-bar">
+        <div class="logo-circle">RSVP</div>
+        <div class="brand-text">
+          <p class="eyebrow">Guest Verification</p>
+          <h1>Event Check-In</h1>
+        </div>
+      </div>
+
+      <p class="hero-copy">Fast, elegant guest search and check-in for weddings, conferences and private events.</p>
+
+      <div class="search-panel">
+        <label for="searchInput">Search guest by name</label>
+        <div class="search-control">
+          <input id="searchInput" type="search" placeholder="John Sanchez" aria-label="Search guest" />
+          <button id="searchButton" type="button">Search</button>
+        </div>
+      </div>
+
+      <div id="statusCard" class="status-card hidden"></div>
+      <div id="resultCard" class="result-card hidden">
+        <p class="result-label" id="resultLabel"></p>
+        <div class="result-row"><span>Name</span><span id="guestName"></span></div>
+        <div class="result-row"><span>Guests Allowed</span><span id="guestCount"></span></div>
+        <div class="result-row"><span>Status</span><span id="guestStatus"></span></div>
+        <button id="checkInButton" class="action-button hidden" type="button">Check In Guest</button>
+      </div>
+
+      <div class="footer-actions">
+        <a href="admin.html">Open admin dashboard</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

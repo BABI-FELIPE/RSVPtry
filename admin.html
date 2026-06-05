@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Guest Verification</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page-shell admin-shell">
+    <section class="hero-card admin-card">
+      <div class="brand-bar">
+        <div class="logo-circle">ADM</div>
+        <div class="brand-text">
+          <p class="eyebrow">Admin Dashboard</p>
+          <h1>Guest Metrics</h1>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <span>Total Guests</span>
+          <strong id="totalGuests">0</strong>
+        </div>
+        <div class="metric-box">
+          <span>Checked In</span>
+          <strong id="checkedInGuests">0</strong>
+        </div>
+        <div class="metric-box">
+          <span>Remaining</span>
+          <strong id="remainingGuests">0</strong>
+        </div>
+        <div class="metric-box">
+          <span>Check-In %</span>
+          <strong id="checkInPercent">0%</strong>
+        </div>
+      </div>
+
+      <div class="admin-search-panel">
+        <label for="adminSearchInput">Search guests</label>
+        <div class="search-control admin-search-control">
+          <input id="adminSearchInput" type="search" placeholder="Maria Cruz" aria-label="Search guest" />
+          <button id="adminSearchButton" type="button">Search</button>
+        </div>
+      </div>
+
+      <div id="adminStatus" class="status-card hidden"></div>
+
+      <div class="table-toolbar">
+        <button id="refreshButton" type="button">Refresh</button>
+        <button id="exportButton" type="button">Export CSV</button>
+      </div>
+
+      <div class="table-frame">
+        <table id="guestTable">
+          <thead>
+            <tr><th>Name</th><th>Guests</th><th>Checked In</th><th>Check-In Time</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="footer-actions">
+        <a href="index.html">Back to check-in page</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>
