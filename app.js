@@ -12,6 +12,7 @@ const checkInButton = document.getElementById('checkInButton');
 
 let currentGuest = null;
 let debounceTimer = null;
+const suggestionsEl = document.getElementById('suggestions');
 
 function normalizeName(value) {
   return value
@@ -56,39 +57,46 @@ function setLoading(isLoading) {
     resultCard.classList.add('hidden');
     checkInButton.classList.add('hidden');
   } else {
+    // keep status visible until replaced by next state
   }
 }
 
+// Search for partial matches and render suggestions; if a single exact match exists, show it
 async function searchGuest() {
-  const query = normalizeName(searchInput.value);
+  const raw = searchInput.value || '';
+  const query = normalizeName(raw);
   if (!query) {
     showStatus('Please enter a guest name.', 'warning');
     resultCard.classList.add('hidden');
+    clearSuggestions();
     return;
   }
 
   setLoading(true);
+  clearSuggestions();
 
   try {
-    const response = await fetch(`${BACKEND_URL}/guest?name=${encodeURIComponent(query)}`);
+    const response = await fetch(`${BACKEND_URL}/search?query=${encodeURIComponent(query)}`);
     if (!response.ok) throw new Error('Failed to connect to backend.');
 
     const data = await response.json();
     if (!data || typeof data.success !== 'boolean') throw new Error('Invalid backend response.');
 
-    if (data.found) {
-      currentGuest = data;
-      showResult({
-        found: true,
-        name: data.name,
-        numberOfGuests: data.numberOfGuests,
-        checkedIn: data.checkedIn,
-      });
-      showStatus('Guest found. Review details and check them in if ready.', 'success');
-    } else {
+    const results = data.results || [];
+    if (results.length === 0) {
       currentGuest = null;
       showResult({ found: false });
-      showStatus('Guest not found. Please verify the spelling or search a different name.', 'warning');
+      showStatus('No guests found. Try a different name or check spelling.', 'warning');
+    } else if (results.length === 1) {
+      // single result — show details
+      const g = results[0];
+      currentGuest = g;
+      showResult({ found: true, name: g.name, numberOfGuests: g.numberOfGuests, checkedIn: g.checkedIn });
+      showStatus('Guest found. Review details and check them in if ready.', 'success');
+    } else {
+      // multiple partial matches — show suggestion list
+      renderSuggestions(results);
+      showStatus(`Found ${results.length} matching guests. Click a name to select.`, 'success');
     }
   } catch (error) {
     resultCard.classList.add('hidden');
@@ -96,6 +104,35 @@ async function searchGuest() {
   } finally {
     setLoading(false);
   }
+}
+
+function renderSuggestions(list) {
+  clearSuggestions();
+  if (!Array.isArray(list) || list.length === 0) return;
+  suggestionsEl.classList.remove('hidden');
+  list.forEach((g) => {
+    const li = document.createElement('li');
+    li.className = 'suggestion-item';
+    li.setAttribute('role', 'option');
+    li.innerHTML = `<span class="s-name">${escapeHtml(g.name)}</span><span class="s-count">${g.numberOfGuests}</span>`;
+    li.addEventListener('click', () => {
+      currentGuest = g;
+      searchInput.value = g.name;
+      clearSuggestions();
+      showResult({ found: true, name: g.name, numberOfGuests: g.numberOfGuests, checkedIn: g.checkedIn });
+      showStatus('Guest selected. Review details and check them in if ready.', 'success');
+    });
+    suggestionsEl.appendChild(li);
+  });
+}
+
+function clearSuggestions() {
+  suggestionsEl.innerHTML = '';
+  suggestionsEl.classList.add('hidden');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 async function checkInGuest() {

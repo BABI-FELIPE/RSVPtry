@@ -200,6 +200,31 @@ button:active {
   border-bottom: none;
 }
 
+.suggestions {
+  margin: 8px 0 0 0;
+  padding: 8px 6px;
+  list-style: none;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(86,79,55,0.08);
+  border: 1px solid rgba(82,80,74,0.06);
+  max-height: 220px;
+  overflow: auto;
+}
+
+.suggestion-item {
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.suggestion-item:hover {
+  background: linear-gradient(90deg, rgba(197,156,89,0.06), rgba(243,222,192,0.03));
+}
+
 .footer-actions {
   margin-top: 20px;
   display: flex;

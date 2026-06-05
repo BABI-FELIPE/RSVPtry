@@ -10,6 +10,12 @@ const DB_FILE = path.join(__dirname, 'guestdb.sqlite');
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(__dirname));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 const db = new sqlite3.Database(DB_FILE, (error) => {
   if (error) {
     console.error('Unable to open database:', error.message);
@@ -86,6 +92,29 @@ app.get('/api/guest', (req, res) => {
       numberOfGuests: guest.numberOfGuests,
       checkedIn: guest.checkedIn.toLowerCase() === 'yes',
     });
+  });
+});
+
+// Return a list of guests matching a partial query (case-insensitive)
+app.get('/api/search', (req, res) => {
+  const q = normalizeName(req.query.query || req.query.name || '');
+  if (!q) {
+    return res.status(400).json({ success: false, message: 'Missing query parameter: query' });
+  }
+
+  db.all('SELECT name, numberOfGuests, checkedIn, checkInTime FROM Guests', (error, rows) => {
+    if (error) {
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    const matches = rows.filter((row) => normalizeName(row.name).includes(q)).map((row) => ({
+      name: row.name,
+      numberOfGuests: row.numberOfGuests,
+      checkedIn: row.checkedIn.toLowerCase() === 'yes',
+      checkInTime: row.checkInTime || '',
+    }));
+
+    return res.json({ success: true, results: matches });
   });
 });
 
